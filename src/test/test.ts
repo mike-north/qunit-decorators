@@ -26,8 +26,17 @@ function test<T>(
     const target = nameOrTarget as any;
     const fn = target[propertyKey];
     const name = fn.name;
-    addInitTask(target.constructor, name, () => {
-      QUnit.test(name, fn);
+    addInitTask(target.constructor, name, (opts) => {
+      console.log(name, opts);
+      if (opts.skip) {
+        QUnit.skip(name, fn);
+      } else if (opts.only) {
+        QUnit.only(name, fn);
+      } else if (opts.todo) {
+        QUnit.todo(name, fn);
+      } else {
+        QUnit.test(name, fn);
+      }
     });
   } else {
     const name = nameOrTarget as string;
@@ -37,14 +46,13 @@ function test<T>(
       _desc: TypedPropertyDescriptor<any>
     ) => {
       const fn = target[key];
-      addInitTask(target.constructor, fn.name, () => {
-        let { initTasks, allTestOptions } = getModuleMetadata(target.constructor).testData;
-        let { options } = initTasks[key as string];
-        if (options.skip || allTestOptions.skip) {
+      addInitTask(target.constructor, fn.name, (opts) => {
+        console.log(fn.name, opts);
+        if (opts.skip) {
           QUnit.skip(name, fn);
-        } else if (options.only) {
+        } else if (opts.only) {
           QUnit.only(name, fn);
-        } else if (options.todo) {
+        } else if (opts.todo) {
           QUnit.todo(name, fn);
         } else {
           QUnit.test(name, fn);

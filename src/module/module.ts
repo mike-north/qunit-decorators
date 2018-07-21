@@ -65,11 +65,19 @@ function qunitModule(
   if (typeof nameOrTarget !== 'string') {
     // 1
     QUnit.module(nameOrTarget.name);
+    const { initTasks } = getModuleMetadata(nameOrTarget).testData;
+    Object.keys(initTasks)
+      .map(k => initTasks[k])
+      .forEach(task => {
+        task.run(task.options);
+      });
   } else {
     const name = nameOrTarget as string;
     return (target: any) => {
-      const { initTasks } = getModuleMetadata(target).testData;
+      console.log('Defining ' + name + ' module');
       QUnit.module(name, hooksOrNested as any, nested);
+      const { initTasks } = getModuleMetadata(target).testData;
+      console.log('Defining test cases for ' + name + ' module');
       Object.keys(initTasks)
         .map(k => initTasks[k])
         .forEach(task => {
