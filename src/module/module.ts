@@ -48,6 +48,10 @@ export function addInitTask(target: any, name: string, task: TestInitTaskFn) {
 function qunitModuleDecorator(target: any, name: string, hooks?: Hooks, nested?: (hooks: NestedHooks) => void) {
   QUnit.module(name, hooks || {}, hks => {
     if (nested) nested(hks);
+    if (target.before) hks.before(target.before);
+    if (target.after) hks.after(target.after);
+    if (target.prototype.beforeEach) hks.beforeEach(target.prototype.beforeEach);
+    if (target.prototype.afterEach) hks.afterEach(target.prototype.afterEach);
     const { initTasks } = getModuleMetadata(target).testData;
     Object.keys(initTasks)
       .map(k => initTasks[k])

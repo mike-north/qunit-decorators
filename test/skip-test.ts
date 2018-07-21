@@ -16,10 +16,10 @@ class SkipTest {
     assert.ok(true);
     invocationCounts.testNotSkipped =
       (invocationCounts.testNotSkipped || 0) + 1;
-  }
+  } 
 }
 
-QUnit.module('Test use of the @skip decorator');
+QUnit.module('zzz Test use of the @skip decorator');
 QUnit.test(
   'A method decorated with @skip decorator is never invoked',
   assert => {

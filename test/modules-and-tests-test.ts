@@ -28,7 +28,7 @@ class ModuleWithDescriptionTest {
   }
 }
 
-QUnit.module('z Test basic use of decorators for modules and tests');
+QUnit.module('zzzz Test basic use of decorators for modules and tests');
 QUnit.test(
   'A method decorated with zero-argument @test decorator ran once',
   assert => {

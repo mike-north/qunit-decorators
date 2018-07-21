@@ -13,7 +13,7 @@ class TodoTest {
 
 }
 
-QUnit.module('Test use of the @todo decorator');
+QUnit.module('zzz Test use of the @todo decorator');
 QUnit.test(
   'A method decorated with @tofo decorator is invoked, and passes despite failures',
   assert => {
