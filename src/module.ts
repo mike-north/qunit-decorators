@@ -1,6 +1,6 @@
 // tslint:disable ban-types
 const INIT_TASKS_KEY = `__qunit_decorators_${Math.round(Math.random() * 1e9)}`;
-type TestInitTaskFn = (opts: TestOptions) => any;
+export type TestInitTaskFn = (opts: TestOptions) => any;
 interface QUnitModuleMetadata {
   testData: {
     allTestOptions: TestOptions;
@@ -13,7 +13,7 @@ export interface TestInitTask {
   options: TestOptions;
   run: TestInitTaskFn;
 }
-interface TestOptions {
+export interface TestOptions {
   skip?: boolean;
   only?: boolean;
   todo?: boolean;
