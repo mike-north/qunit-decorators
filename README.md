@@ -1,6 +1,6 @@
 # QUnit Decorators
 
-Allow [QUnit](https://qunitjs.com/) tests to be written and organized with [JavaScript](https://github.com/tc39/proposal-decorators) or [TypeScript decorators](https://www.typescriptlang.org/docs/handbook/decorators.html).
+Allow [QUnit](https://qunitjs.com/) tests to be written and organized with [JavaScript](https://github.com/tc39/proposal-decorators) or [TypeScript decorators](https://www.typescriptlang.org/docs/handbook/decorators.html). Inspired by (mocha-typescript)[https://github.com/pana-cc/mocha-typescript].
 
 ## Setting this up in your project
 
@@ -112,10 +112,83 @@ class WIPBugFixes {
 }
 ```
 
-### Hooks
+### Module Hooks
 
+When defining a QUnit module, you have an opportunity to set up one or more hooks to customize code that runs before or after your tests.
 
+_see: [QUnit.module](https://api.qunitjs.com/QUnit/module)_
 
+* before* - Runs before the first test.
+* beforeEach* - Runs before each test.
+* afterEach* - Runs after each test.
+* after* -	Runs after the last test.
+
+There are a variety of ways you can provide functions for hooks, and qunit-decorators doesn't interfere with their normal capabilities and operation (i.e.,  if you return a promise from a hook, QUnit will wait for that promise to resolve before running other hooks or tests).
+
+One way to express these hooks is as an object, passed into the `@module` decorator
+
+```ts
+import { module, test } from 'qunit-decorators';
+import Pretender from 'pretender';
+
+let server;
+const myHooks = {
+  before() {
+    // Start intercepting XHR
+    server = new Pretender();
+  },
+  after() {
+    // Restore original XHR
+    server.shutdown();
+  }
+}
+
+@module('A good test module', myHooks)
+class GoodModule {
+
+}
+```
+Or, pass in a function that receives a callback where hooks may be registered
+
+```ts
+import { module, test } from 'qunit-decorators';
+import Pretender from 'pretender';
+
+@module('A better test module', hooks => {
+  let server;
+  hooks.before(() => {
+    server = new Pretender();
+  });
+  hooks.after(() => {
+    server.shutdown();
+  });
+})
+class BetterModule {
+
+}
+```
+or you can define them as static and member functions on the module's class
+
+```ts
+import { module, test } from 'qunit-decorators';
+import Pretender from 'pretender';
+
+let server;
+
+@module('A better test module')
+class BetterModule {
+  // before and after are static functions
+  static before() {
+    server = new Pretender();
+  }
+  static after() {
+    server.shutdown();
+  }
+  // beforeEach and afterEach are member functions
+  beforeEach() { ... }
+  afterEach() { ... }
+}
+```
 ---
 
 (c) 2018 LinkedIn
