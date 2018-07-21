@@ -1,8 +1,8 @@
-import { module, test } from 'qunit-decorators';
+import { suite, test } from 'qunit-decorators';
 
 let invocationCounts: { [k: string]: number } = {};
 
-@module('(experiment) Test use of the @skip decorator')
+@suite('(experiment) Test use of the @skip decorator')
 class SkipTest {
   @test.skip
   testSkipped(assert: Assert) {

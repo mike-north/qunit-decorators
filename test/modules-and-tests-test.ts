@@ -1,8 +1,8 @@
-import { module, test } from 'qunit-decorators';
+import { suite, test } from 'qunit-decorators';
 
 let invocationCounts: { [k: string]: number } = {};
 
-@module
+@suite
 class ModuleWithoutDescriptionTest {
   @test
   foo(assert: Assert) {
@@ -11,7 +11,7 @@ class ModuleWithoutDescriptionTest {
   }
 }
 
-@module('(experiment) Test basic use of decorators for modules and tests')
+@suite('(experiment) Test basic use of decorators for modules and tests')
 class ModuleWithDescriptionTest {
   @test // uses method name as description
   testNoDescription(assert: Assert) {

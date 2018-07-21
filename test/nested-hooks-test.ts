@@ -1,9 +1,9 @@
-import { module, test } from 'qunit-decorators';
+import { suite, test } from 'qunit-decorators';
 
 let counts: { [k: string]: number } = {};
 
 let testsRun = 0;
-@module('Test that nested hooks work via the @module decorator', hks => {
+@suite('Test that nested hooks work via the @module decorator', hks => {
   hks.beforeEach(() => {
     counts.beforeEach = (counts.beforeEach || 0) + 1;
   });

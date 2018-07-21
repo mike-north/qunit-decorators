@@ -1,10 +1,10 @@
-import { module, test } from 'qunit-decorators';
+import { suite, test } from 'qunit-decorators';
 
 let counts: { [k: string]: number } = {};
 
 let testsRun = 0;
 
-@module
+@suite
 class MethodHooksTest {
   static before() {
     counts.before = (counts.before || 0) + 1;

@@ -1,6 +1,6 @@
-import { module, test } from 'qunit-decorators';
+import { suite, test } from 'qunit-decorators';
 
-@module.skip
+@suite.skip
 class ModuleSkipTest {
   @test
   willFail(assert: Assert) {

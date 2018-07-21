@@ -1,4 +1,4 @@
-import { module, test } from 'qunit-decorators';
+import { suite, test } from 'qunit-decorators';
 
 let invocationCounts: { [k: string]: number } = {};
 
@@ -18,7 +18,7 @@ const myHooks: Hooks = {
 };
 
 let testsRun = 0;
-@module('Test that hooks work via the @module decorator', myHooks)
+@suite('Test that hooks work via the @module decorator', myHooks)
 class HooksTest {
   @test first(assert: Assert) {
     assert.equal(invocationCounts.after, undefined);

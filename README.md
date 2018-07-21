@@ -22,9 +22,9 @@ yarn add -D qunit-decorators
 When using qunit-decorators, you’ll use classes organize modules, and methods for your tests
 
 ```ts
-import { module, test } from 'qunit-decorators';
+import { suite, test } from 'qunit-decorators';
 
-@module // <-- decorate your modules with @module
+@suite // <-- decorate your modules with @suite
 class UserLoginTests {
 
   @test // <-- decorate your test methods with @test
@@ -43,9 +43,9 @@ _see: [QUnit.module](https://api.qunitjs.com/QUnit/module) and [QUnit.test](http
 
 
 ```ts
-import { module, test } from 'qunit-decorators';
+import { suite, test } from 'qunit-decorators';
 
-@module('User authentication test suite')
+@suite('User authentication test suite')
 class UserLoginTests {
 
   @test('Missing password case errors as expected')
@@ -64,12 +64,12 @@ Sometimes it's useful to temporarily focus on a subset of tests while writing ne
 _see: [QUnit.only](https://api.qunitjs.com/QUnit/only)_
 
 ```ts
-import { module, test } from 'qunit-decorators';
+import { suite, test } from 'qunit-decorators';
 
-@module.only('Working on some new tests')
+@suite.only('Working on some new tests')
 class MyNewTests { ... }
 
-@module
+@suite
 class ExistingFeatureTests {
 
   @test.only('Fixing something else too')
@@ -83,12 +83,12 @@ Alternatively, you may choose specific tests or modules to skip in a similar way
 _see: [QUnit.skip](https://api.qunitjs.com/QUnit/skip)_
 
 ```ts
-import { module, test } from 'qunit-decorators';
+import { suite, test } from 'qunit-decorators';
 
-@module.skip('Things that take a long time')
+@suite.skip('Things that take a long time')
 class SlowTests { ... }
 
-@module
+@suite
 class ExistingFeatureTests {
 
   @test.skip
@@ -102,9 +102,9 @@ Particularly while in the middle of a code change, you'll sometimes have tests t
 _see: [QUnit.todo](https://api.qunitjs.com/QUnit/todo)_
 
 ```ts
-import { module, test } from 'qunit-decorators';
+import { suite, test } from 'qunit-decorators';
 
-@module
+@suite
 class WIPBugFixes {
 
   @test.todo("We'll get to this Soon™️")
@@ -117,7 +117,7 @@ class WIPBugFixes {
 
 ### Module Hooks
 
-When defining a QUnit module, you have an opportunity to set up one or more hooks to customize code that runs before or after your tests.
+When defining a QUnit suite, you have an opportunity to set up one or more hooks to customize code that runs before or after your tests.
 
 _see: [QUnit.module](https://api.qunitjs.com/QUnit/module)_
 
@@ -132,12 +132,12 @@ There are a variety of ways you can provide functions for hooks, and qunit-decor
 You may define hooks as static and member functions on the module's class
 
 ```ts
-import { module, test } from 'qunit-decorators';
+import { suite, test } from 'qunit-decorators';
 import Pretender from 'pretender';
 
 let server;
 
-@module('A better test module')
+@suite('A better test module')
 class BetterModule {
   // before and after are static functions
   static before() {
@@ -151,10 +151,10 @@ class BetterModule {
   afterEach() { ... }
 }
 ```
-or pass the hooks passed into the `@module` decorator as an object
+or pass the hooks passed into the `@suite` decorator as an object
 
 ```ts
-import { module, test } from 'qunit-decorators';
+import { suite, test } from 'qunit-decorators';
 import Pretender from 'pretender';
 
 let server;
@@ -169,7 +169,7 @@ const myHooks = {
   }
 }
 
-@module('A good test module', myHooks)
+@suite('A good test module', myHooks)
 class GoodModule {
 
 }
@@ -177,10 +177,10 @@ class GoodModule {
 or pass in a callback that receives an object which may be used to register hooks
 
 ```ts
-import { module, test } from 'qunit-decorators';
+import { suite, test } from 'qunit-decorators';
 import Pretender from 'pretender';
 
-@module('A better test module', hooks => {
+@suite('A better test module', hooks => {
   let server;
   hooks.before(() => {
     server = new Pretender();
