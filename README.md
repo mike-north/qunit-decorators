@@ -2,6 +2,9 @@
 
 Allow [QUnit](https://qunitjs.com/) tests to be written and organized with [JavaScript](https://github.com/tc39/proposal-decorators) or [TypeScript decorators](https://www.typescriptlang.org/docs/handbook/decorators.html). Inspired by [mocha-typescript](https://github.com/pana-cc/mocha-typescript).
 
+[![Build Status](https://travis-ci.org/mike-north/qunit-decorators.svg?branch=master)](https://travis-ci.org/mike-north/qunit-decorators) [![Version](https://img.shields.io/npm/v/qunit-decorators.svg)](https://www.npmjs.com/package/qunit-decorators) [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
+
+
 ## Setting this up in your project
 
 ```sh
