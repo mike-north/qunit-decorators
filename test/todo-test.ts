@@ -1,11 +1,10 @@
-import { module, skip, test, todo } from 'qunit-decorators';
+import { module, test } from 'qunit-decorators';
 
 let invocationCounts: { [k: string]: number } = {};
 
 @module('(experiment) Test use of the @todo decorator')
 class TodoTest {
-  @todo
-  @test
+  @test.todo
   testTodo(assert: Assert) {
     assert.ok(false);
     invocationCounts.testTodo = (invocationCounts.testTodo || 0) + 1;
