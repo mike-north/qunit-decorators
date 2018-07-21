@@ -1,3 +1,2 @@
-export default function hello() {
-  return 'Hello from qunit-decorators';
-}
+export { module } from './module';
+export { skip, test, only, todo } from './test';
