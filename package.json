@@ -1,6 +1,6 @@
 {
   "name": "qunit-decorators",
-  "version": "0.0.1",
+  "version": "0.0.0-development",
   "description": "QUnit tests in ES6 and TypeScript via decorators",
   "main": "dist/commonjs/src/index.js",
   "module": "dist/modules/src/index.js",
@@ -26,7 +26,9 @@
     "build-tests": "ember build",
     "pretest": "npm run problems",
     "test": "ember test",
-    "tdd": "ember test --server"
+    "tdd": "ember test --server",
+    "travis-deploy-once": "travis-deploy-once",
+    "semantic-release": "semantic-release"
   },
   "license": "MIT",
   "devDependencies": {
@@ -37,7 +39,12 @@
     "semantic-release": "^15.8.1",
     "shelljs": "^0.7.8",
     "tslint": "^5.7.0",
-    "typescript": "^2.4.2"
+    "typescript": "^2.4.2",
+    "travis-deploy-once": "^5.0.1"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mike-north/qunit-decorators.git"
+  }
 }
