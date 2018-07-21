@@ -1,6 +1,6 @@
 # QUnit Decorators
 
-Allow [QUnit](https://qunitjs.com/) tests to be written and organized with [JavaScript](https://github.com/tc39/proposal-decorators) or [TypeScript decorators](https://www.typescriptlang.org/docs/handbook/decorators.html). Inspired by (mocha-typescript)[https://github.com/pana-cc/mocha-typescript].
+Allow [QUnit](https://qunitjs.com/) tests to be written and organized with [JavaScript](https://github.com/tc39/proposal-decorators) or [TypeScript decorators](https://www.typescriptlang.org/docs/handbook/decorators.html). Inspired by [mocha-typescript](https://github.com/pana-cc/mocha-typescript).
 
 ## Setting this up in your project
 
