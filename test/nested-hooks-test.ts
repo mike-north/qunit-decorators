@@ -18,7 +18,8 @@ let testsRun = 0;
   });
 })
 class NestedHooksTest {
-  @test first(assert: Assert) {
+  @test
+  first(assert: Assert) {
     assert.equal(counts.after, undefined);
     assert.equal(counts.before, 1);
     assert.equal(counts.afterEach, testsRun || undefined);
@@ -26,14 +27,16 @@ class NestedHooksTest {
     testsRun++;
   }
 
-  @test second(assert: Assert) {
+  @test
+  second(assert: Assert) {
     assert.equal(counts.after, undefined);
     assert.equal(counts.before, 1);
     assert.equal(counts.afterEach, testsRun || undefined);
     assert.equal(+counts.beforeEach, testsRun + 1);
     testsRun++;
   }
-  @test third(assert: Assert) {
+  @test
+  third(assert: Assert) {
     assert.equal(counts.after, undefined);
     assert.equal(counts.before, 1);
     assert.equal(counts.afterEach, testsRun || undefined);

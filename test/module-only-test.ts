@@ -1,6 +1,6 @@
 import { module, test } from 'qunit-decorators';
 
-@module//.only
+@module// .only
 class ModuleOnlyTest {
   @test
   oneTest(assert: Assert) {

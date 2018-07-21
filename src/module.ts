@@ -3,10 +3,10 @@ const INIT_TASKS_KEY = `__qunit_decorators_${Math.round(Math.random() * 1e9)}`;
 type TestInitTaskFn = (opts: TestOptions) => any;
 interface QUnitModuleMetadata {
   testData: {
-    allTestOptions: TestOptions,
+    allTestOptions: TestOptions;
     initTasks: {
-      [k: string]: TestInitTask
-    }
+      [k: string]: TestInitTask;
+    };
   };
 }
 export interface TestInitTask {
@@ -23,12 +23,12 @@ interface Module {
   new (): any;
 }
 
-export function getModuleMetadata(testModule: Module | Function): QUnitModuleMetadata {
+function getModuleMetadata(testModule: Module | Function): QUnitModuleMetadata {
   const obj = testModule as any;
   if (typeof obj[INIT_TASKS_KEY] === 'undefined') {
     obj[INIT_TASKS_KEY] = {
       testData: {
-        allTestOptions: {skip: false},
+        allTestOptions: { skip: false },
         initTasks: {}
       }
     };
@@ -36,13 +36,17 @@ export function getModuleMetadata(testModule: Module | Function): QUnitModuleMet
   return obj[INIT_TASKS_KEY];
 }
 
-export function addInitTask(target: any, name: string, task: TestInitTaskFn): TestInitTask {
+export function addInitTask(
+  target: any,
+  name: string,
+  task: TestInitTaskFn
+): TestInitTask {
   const { initTasks } = getModuleMetadata(target).testData;
-  const options = { };
-  return initTasks[name] = {
+  const options = {};
+  return (initTasks[name] = {
     run: task,
     options
-  };
+  });
 }
 
 interface ModuleDecoratorOptions {
@@ -50,9 +54,15 @@ interface ModuleDecoratorOptions {
   only?: boolean;
 }
 
-function qunitModuleDecorator(target: any, name: string, options: ModuleDecoratorOptions, hooks?: Hooks, nested?: (hooks: NestedHooks) => void) {
+function qunitModuleDecorator(
+  target: any,
+  name: string,
+  options: ModuleDecoratorOptions,
+  hooks?: Hooks,
+  nested?: (hooks: NestedHooks) => void
+) {
   let fn = QUnit.module;
-  if (options.skip) fn = (QUnit.module as any).skip;
+  if (options.skip) fn = (QUnit.module as any).skip;
   else if (options.only) fn = (QUnit.module as any).only;
   fn(name, hks => {
     if (nested) nested(hks);
@@ -62,7 +72,9 @@ function qunitModuleDecorator(target: any, name: string, options: ModuleDecorato
     if (hooks && hooks.afterEach) hks.afterEach(hooks.afterEach);
     if (target.before) hks.before(target.before);
     if (target.after) hks.after(target.after);
-    if (target.prototype.beforeEach) hks.beforeEach(target.prototype.beforeEach);
+    if (target.prototype.beforeEach) {
+      hks.beforeEach(target.prototype.beforeEach);
+    }
     if (target.prototype.afterEach) hks.afterEach(target.prototype.afterEach);
     const { initTasks } = getModuleMetadata(target).testData;
     Object.keys(initTasks)
@@ -79,7 +91,8 @@ function baseQunitModuleDecorator(
   hooksOrNested?: Hooks | ((hooks: NestedHooks) => void),
   nested?: ((hooks: NestedHooks) => void)
 ): ClassDecorator | void {
-  const name = typeof nameOrTarget === 'string' ? nameOrTarget : nameOrTarget.name;
+  const name =
+    typeof nameOrTarget === 'string' ? nameOrTarget : nameOrTarget.name;
   if (typeof nameOrTarget !== 'string') {
     const target = nameOrTarget;
     qunitModuleDecorator(target, name, options);
@@ -109,7 +122,7 @@ function qunitModule(
   hooksOrNested?: Hooks | ((hooks: NestedHooks) => void),
   nested?: ((hooks: NestedHooks) => void)
 ): ClassDecorator | void {
-  return baseQunitModuleDecorator(nameOrTarget, { }, hooksOrNested, nested);
+  return baseQunitModuleDecorator(nameOrTarget, {}, hooksOrNested, nested);
 }
 
 function moduleSkip<TFunction extends Function>(
@@ -129,7 +142,12 @@ function moduleSkip(
   hooksOrNested?: Hooks | ((hooks: NestedHooks) => void),
   nested?: ((hooks: NestedHooks) => void)
 ): ClassDecorator | void {
-  return baseQunitModuleDecorator(nameOrTarget, { skip: true }, hooksOrNested, nested);
+  return baseQunitModuleDecorator(
+    nameOrTarget,
+    { skip: true },
+    hooksOrNested,
+    nested
+  );
 }
 function moduleOnly<TFunction extends Function>(
   target: TFunction
@@ -148,9 +166,17 @@ function moduleOnly(
   hooksOrNested?: Hooks | ((hooks: NestedHooks) => void),
   nested?: ((hooks: NestedHooks) => void)
 ): ClassDecorator | void {
-  return baseQunitModuleDecorator(nameOrTarget, { only: true }, hooksOrNested, nested);
+  return baseQunitModuleDecorator(
+    nameOrTarget,
+    { only: true },
+    hooksOrNested,
+    nested
+  );
 }
-type moduleDecorator = typeof qunitModule & { skip: typeof moduleSkip, only: typeof moduleOnly }
-(qunitModule as any).skip = moduleSkip;
-(qunitModule as any).only = moduleOnly;
+type moduleDecorator = typeof qunitModule & {
+  skip: typeof moduleSkip;
+  only: typeof moduleOnly;
+};
+(qunitModule as any).skip = moduleSkip;
+(qunitModule as any).only = moduleOnly;
 export default qunitModule as moduleDecorator;

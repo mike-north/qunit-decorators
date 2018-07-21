@@ -1,7 +1,7 @@
 {
   "name": "qunit-decorators",
-  "version": "0.5.0",
-  "description": "A brand new TypeScript library.",
+  "version": "0.0.1",
+  "description": "QUnit tests in ES6 and TypeScript via decorators",
   "main": "dist/commonjs/src/index.js",
   "module": "dist/modules/src/index.js",
   "types": "dist/types/src/index.d.ts",
@@ -9,8 +9,15 @@
     "main": "ember-addon.js"
   },
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "typescript",
+    "decorators"
   ],
+  "author": {
+    "name": "Mike North",
+    "email": "michael.l.north@gmail.com",
+    "url": "https://mike.works"
+  },
   "scripts": {
     "problems": "node ./scripts/problems.js",
     "preversion": "npm run test",
@@ -31,7 +38,5 @@
     "tslint": "^5.7.0",
     "typescript": "^2.4.2"
   },
-  "dependencies": {
-    "ts-std": "^0.6.2"
-  }
+  "dependencies": { }
 }
