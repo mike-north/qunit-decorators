@@ -46,8 +46,13 @@ export function addInitTask(target: any, name: string, task: TestInitTaskFn) {
 }
 
 function qunitModuleDecorator(target: any, name: string, hooks?: Hooks, nested?: (hooks: NestedHooks) => void) {
-  QUnit.module(name, hooks || {}, hks => {
+  console.log("MODULE", name);
+  QUnit.module(name, hks => {
     if (nested) nested(hks);
+    if (hooks && hooks.before) hks.before(hooks.before);
+    if (hooks && hooks.after) hks.after(hooks.after);
+    if (hooks && hooks.beforeEach) hks.beforeEach(hooks.beforeEach);
+    if (hooks && hooks.afterEach) hks.afterEach(hooks.afterEach);
     if (target.before) hks.before(target.before);
     if (target.after) hks.after(target.after);
     if (target.prototype.beforeEach) hks.beforeEach(target.prototype.beforeEach);
@@ -59,6 +64,29 @@ function qunitModuleDecorator(target: any, name: string, hooks?: Hooks, nested?:
         task.run(task.options);
       });
   });
+}
+
+interface ModuleDecoratorOptions {
+  skip: boolean;
+  only: boolean;
+}
+function baseQunitModuleDecorator(
+  nameOrTarget: Function | string,
+  hooksOrNested?: Hooks | ((hooks: NestedHooks) => void),
+  nested?: ((hooks: NestedHooks) => void),
+  options: ModuleDecoratorOptions = { skip: false, only: false }
+): ClassDecorator | void {
+  const name = typeof nameOrTarget === 'string' ? nameOrTarget : nameOrTarget.name;
+  if (typeof nameOrTarget !== 'string') {
+    const target = nameOrTarget;
+    qunitModuleDecorator(target, name);
+  } else {
+    return (target: any) => {
+      let hooks = typeof hooksOrNested === 'object' ? hooksOrNested : undefined;
+      let nestedFn = typeof hooksOrNested !== 'object' ? hooksOrNested : nested;
+      qunitModuleDecorator(target, name, hooks, nestedFn);
+    };
+  }
 }
 
 function qunitModule<TFunction extends Function>(
@@ -78,17 +106,28 @@ function qunitModule(
   hooksOrNested?: Hooks | ((hooks: NestedHooks) => void),
   nested?: ((hooks: NestedHooks) => void)
 ): ClassDecorator | void {
-  if (typeof nameOrTarget !== 'string') {
-    // 1
-    const target = nameOrTarget;
-    return qunitModuleDecorator(target, name);
-  } else {
-    const name = nameOrTarget as string;
-    return (target: any) => {
-      let hooks = typeof hooksOrNested === 'object' ? hooksOrNested : undefined;
-      let nestedFn = typeof hooksOrNested !== 'object' ? hooksOrNested : nested;
-      return qunitModuleDecorator(target, name, hooks, nestedFn);
-    };
-  }
+  return baseQunitModuleDecorator(nameOrTarget, hooksOrNested, nested);
 }
-export default qunitModule;
+
+function moduleSkip<TFunction extends Function>(
+  target: TFunction
+): TFunction | void;
+function moduleSkip(
+  name: string,
+  nested?: (hooks: NestedHooks) => void
+): ClassDecorator;
+function moduleSkip(
+  name: string,
+  hooks?: Hooks,
+  nested?: (hooks: NestedHooks) => void
+): ClassDecorator;
+function moduleSkip(
+  nameOrTarget: Function | string,
+  hooksOrNested?: Hooks | ((hooks: NestedHooks) => void),
+  nested?: ((hooks: NestedHooks) => void)
+): ClassDecorator | void {
+  return baseQunitModuleDecorator(nameOrTarget, hooksOrNested, nested);
+}
+type moduleDecorator = typeof qunitModule & { skip: typeof moduleSkip}
+
+export default qunitModule as moduleDecorator;

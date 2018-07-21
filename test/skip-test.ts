@@ -19,7 +19,7 @@ class SkipTest {
   } 
 }
 
-QUnit.module('zzz Test use of the @skip decorator');
+QUnit.module('Test use of the @skip decorator');
 QUnit.test(
   'A method decorated with @skip decorator is never invoked',
   assert => {
