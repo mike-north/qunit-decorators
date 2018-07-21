@@ -118,10 +118,10 @@ When defining a QUnit module, you have an opportunity to set up one or more hook
 
 _see: [QUnit.module](https://api.qunitjs.com/QUnit/module)_
 
-* before* - Runs before the first test.
-* beforeEach* - Runs before each test.
-* afterEach* - Runs after each test.
-* after* -	Runs after the last test.
+* *before* - Runs before the first test.
+* *beforeEach* - Runs before each test.
+* *afterEach* - Runs after each test.
+* *after* -	Runs after the last test.
 
 There are a variety of ways you can provide functions for hooks, and qunit-decorators doesn't interfere with their normal capabilities and operation (i.e.,  if you return a promise from a hook, QUnit will wait for that promise to resolve before running other hooks or tests).
 
