@@ -45,6 +45,18 @@ export function addInitTask(target: any, name: string, task: TestInitTaskFn) {
   };
 }
 
+function qunitModuleDecorator(target: any, name: string, hooks?: Hooks, nested?: (hooks: NestedHooks) => void) {
+  QUnit.module(name, hooks || {}, hks => {
+    if (nested) nested(hks);
+    const { initTasks } = getModuleMetadata(target).testData;
+    Object.keys(initTasks)
+      .map(k => initTasks[k])
+      .forEach(task => {
+        task.run(task.options);
+      });
+  });
+}
+
 function qunitModule<TFunction extends Function>(
   target: TFunction
 ): TFunction | void;
@@ -64,23 +76,14 @@ function qunitModule(
 ): ClassDecorator | void {
   if (typeof nameOrTarget !== 'string') {
     // 1
-    QUnit.module(nameOrTarget.name);
-    const { initTasks } = getModuleMetadata(nameOrTarget).testData;
-    Object.keys(initTasks)
-      .map(k => initTasks[k])
-      .forEach(task => {
-        task.run(task.options);
-      });
+    const target = nameOrTarget;
+    return qunitModuleDecorator(target, name);
   } else {
     const name = nameOrTarget as string;
     return (target: any) => {
-      QUnit.module(name, hooksOrNested as any, nested);
-      const { initTasks } = getModuleMetadata(target).testData;
-      Object.keys(initTasks)
-        .map(k => initTasks[k])
-        .forEach(task => {
-          task.run(task.options);
-        });
+      let hooks = typeof hooksOrNested === 'object' ? hooksOrNested : undefined;
+      let nestedFn = typeof hooksOrNested !== 'object' ? hooksOrNested : nested;
+      return qunitModuleDecorator(target, name, hooks, nestedFn);
     };
   }
 }
