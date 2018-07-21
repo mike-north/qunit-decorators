@@ -27,7 +27,6 @@ function test<T>(
     const fn = target[propertyKey];
     const name = fn.name;
     addInitTask(target.constructor, name, (opts) => {
-      console.log(name, opts);
       if (opts.skip) {
         QUnit.skip(name, fn);
       } else if (opts.only) {
@@ -47,7 +46,6 @@ function test<T>(
     ) => {
       const fn = target[key];
       addInitTask(target.constructor, fn.name, (opts) => {
-        console.log(fn.name, opts);
         if (opts.skip) {
           QUnit.skip(name, fn);
         } else if (opts.only) {
