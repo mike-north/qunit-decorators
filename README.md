@@ -125,7 +125,30 @@ _see: [QUnit.module](https://api.qunitjs.com/QUnit/module)_
 
 There are a variety of ways you can provide functions for hooks, and qunit-decorators doesn't interfere with their normal capabilities and operation (i.e.,  if you return a promise from a hook, QUnit will wait for that promise to resolve before running other hooks or tests).
 
-One way to express these hooks is as an object, passed into the `@module` decorator
+
+You may define hooks as static and member functions on the module's class
+
+```ts
+import { module, test } from 'qunit-decorators';
+import Pretender from 'pretender';
+
+let server;
+
+@module('A better test module')
+class BetterModule {
+  // before and after are static functions
+  static before() {
+    server = new Pretender();
+  }
+  static after() {
+    server.shutdown();
+  }
+  // beforeEach and afterEach are member functions
+  beforeEach() { ... }
+  afterEach() { ... }
+}
+```
+or pass the hooks passed into the `@module` decorator as an object
 
 ```ts
 import { module, test } from 'qunit-decorators';
@@ -148,7 +171,7 @@ class GoodModule {
 
 }
 ```
-Or, pass in a function that receives a callback where hooks may be registered
+or pass in a callback that receives an object which may be used to register hooks
 
 ```ts
 import { module, test } from 'qunit-decorators';
@@ -165,28 +188,6 @@ import Pretender from 'pretender';
 })
 class BetterModule {
 
-}
-```
-or you can define them as static and member functions on the module's class
-
-```ts
-import { module, test } from 'qunit-decorators';
-import Pretender from 'pretender';
-
-let server;
-
-@module('A better test module')
-class BetterModule {
-  // before and after are static functions
-  static before() {
-    server = new Pretender();
-  }
-  static after() {
-    server.shutdown();
-  }
-  // beforeEach and afterEach are member functions
-  beforeEach() { ... }
-  afterEach() { ... }
 }
 ```
 ---
