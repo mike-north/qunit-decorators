@@ -54,7 +54,7 @@ interface ModuleDecoratorOptions {
   only?: boolean;
 }
 
-function qunitModuleDecorator(
+function qunitSuiteDecorator(
   target: any,
   name: string,
   options: ModuleDecoratorOptions,
@@ -65,7 +65,14 @@ function qunitModuleDecorator(
   let fn = QUnit.module;
   if (options.skip) fn = (QUnit.module as any).skip;
   else if (options.only) fn = (QUnit.module as any).only;
-  let returned: any = fn(name, hks => {
+  let normalizedName: string = name
+    ? name
+    : target
+      ? target.name
+      : `Unnamed QUnit Module ${Math.round(1e6 + Math.random() * 1e6).toString(
+          16
+        )}`;
+  let returned: any = fn(normalizedName, hks => {
     if (nested) nested(hks);
     if (hooks && hooks.before) hks.before(hooks.before);
     if (hooks && hooks.after) hks.after(hooks.after);
@@ -130,11 +137,11 @@ function baseQunitModuleDecorator(
           : typeof metaOrNested !== 'object'
             ? metaOrNested
             : nested;
-      qunitModuleDecorator(target, name, options, meta, hooks, nestedFn);
+      qunitSuiteDecorator(target, name, options, meta, hooks, nestedFn);
     };
   } else {
     const target = nameMetaOrTarget;
-    qunitModuleDecorator(target, name, options);
+    qunitSuiteDecorator(target, name, options);
   }
 }
 
@@ -280,14 +287,19 @@ function makeTestDecorator<T>(
     const fn = target[propertyKey];
     const name = fn.name;
     let task = addInitTask(target.constructor, name, opts => {
+      let fnName: 'skip' | 'only' | 'todo' | 'test';
       if (opts.skip) {
-        QUnit.skip(name, fn);
+        fnName = 'skip';
       } else if (opts.only) {
-        QUnit.only(name, fn);
+        fnName = 'only';
       } else if (opts.todo) {
-        QUnit.todo(name, fn);
+        fnName = 'todo';
       } else {
-        QUnit.test(name, fn);
+        fnName = 'test';
+      }
+      let returned = (QUnit as any)[fnName](name, fn);
+      if (returned && returned.meta) {
+        returned.meta({});
       }
     });
     if (options.skip) task.options.skip = true;
