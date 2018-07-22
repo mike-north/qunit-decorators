@@ -62,7 +62,7 @@ function qunitSuiteDecorator(
   hooks?: Hooks,
   nested?: (hooks: NestedHooks) => void
 ) {
-  let fn = QUnit.module;
+  let fn: (name: string, cb: (this: any, hooks: NestedHooks) => void) => void = QUnit.module;
   if (options.skip) fn = (QUnit.module as any).skip;
   else if (options.only) fn = (QUnit.module as any).only;
   let normalizedName: string = name
@@ -72,18 +72,24 @@ function qunitSuiteDecorator(
       : `Unnamed QUnit Module ${Math.round(1e6 + Math.random() * 1e6).toString(
           16
         )}`;
-  let returned: any = fn(normalizedName, hks => {
+  let returned: any = fn(normalizedName, function(this: any, hks: NestedHooks) {
     if (nested) nested(hks);
+    let instance = new target(hks);
+    Object.assign(this, instance);
     if (hooks && hooks.before) hks.before(hooks.before);
     if (hooks && hooks.after) hks.after(hooks.after);
     if (hooks && hooks.beforeEach) hks.beforeEach(hooks.beforeEach);
     if (hooks && hooks.afterEach) hks.afterEach(hooks.afterEach);
-    if (target.before) hks.before(target.before);
-    if (target.after) hks.after(target.after);
-    if (target.prototype.beforeEach) {
-      hks.beforeEach(target.prototype.beforeEach);
+    if (instance.before) {
+      hks.before(instance.before);
     }
-    if (target.prototype.afterEach) hks.afterEach(target.prototype.afterEach);
+    if (instance.after) {
+      hks.after(instance.after);
+    }
+    if (instance.beforeEach) {
+      hks.beforeEach(instance.beforeEach);
+    }
+    if (instance.afterEach) hks.afterEach(instance.afterEach);
     const { initTasks } = getModuleMetadata(target).testData;
     Object.keys(initTasks)
       .map(k => initTasks[k])

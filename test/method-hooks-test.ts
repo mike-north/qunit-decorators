@@ -6,10 +6,10 @@ let testsRun = 0;
 
 @suite
 class MethodHooksTest {
-  static before() {
+  before() {
     counts.before = (counts.before || 0) + 1;
   }
-  static after() {
+  after() {
     counts.after = (counts.after || 0) + 1;
   }
   beforeEach() {

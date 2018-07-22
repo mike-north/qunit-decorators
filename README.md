@@ -129,7 +129,7 @@ _see: [QUnit.module](https://api.qunitjs.com/QUnit/module)_
 There are a variety of ways you can provide functions for hooks, and qunit-decorators doesn't interfere with their normal capabilities and operation (i.e.,  if you return a promise from a hook, QUnit will wait for that promise to resolve before running other hooks or tests).
 
 
-You may define hooks as static and member functions on the module's class
+You may define hooks as member functions on the module's class
 
 ```ts
 import { suite, test } from 'qunit-decorators';
@@ -139,14 +139,13 @@ let server;
 
 @suite('A better test module')
 class BetterModule {
-  // before and after are static functions
-  static before() {
+  before() {
     server = new Pretender();
   }
-  static after() {
+  after() {
     server.shutdown();
   }
-  // beforeEach and afterEach are member functions
+  
   beforeEach() { ... }
   afterEach() { ... }
 }
