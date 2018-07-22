@@ -54,10 +54,19 @@ interface ModuleDecoratorOptions {
   only?: boolean;
 }
 
+function installModuleMetadata(meta: { [k: string]: any }) {
+  if ((QUnit.config as any).currentModule.meta === void 0) {
+    (QUnit.config as any).currentModule.meta = meta;
+  } else {
+    Object.assign((QUnit.config as any).currentModule.meta, meta);
+  }
+}
+
 function qunitModuleDecorator(
   target: any,
   name: string,
   options: ModuleDecoratorOptions,
+  meta: { [k: string]: any } = {},
   hooks?: Hooks,
   nested?: (hooks: NestedHooks) => void
 ) {
@@ -65,6 +74,7 @@ function qunitModuleDecorator(
   if (options.skip) fn = (QUnit.module as any).skip;
   else if (options.only) fn = (QUnit.module as any).only;
   fn(name, hks => {
+    installModuleMetadata(meta);
     if (nested) nested(hks);
     if (hooks && hooks.before) hks.before(hooks.before);
     if (hooks && hooks.after) hks.after(hooks.after);
@@ -85,23 +95,52 @@ function qunitModuleDecorator(
   });
 }
 
+function isHooks(maybeHooks: { [k: string]: any }) {
+  // only a few property keys are allowed
+  // all values must be functions
+  const keys = Object.keys(maybeHooks);
+  for (let k of keys) {
+    if (['before', 'beforeEach', 'after', 'afterEach'].indexOf(k) < 0) {
+      return false;
+    }
+    if (typeof maybeHooks[k] !== 'function') return false;
+  }
+  return true;
+}
+
 function baseQunitModuleDecorator(
-  nameOrTarget: Function | string,
+  nameMetaOrTarget: Function | string | { [k: string]: any },
   options: ModuleDecoratorOptions = { skip: false, only: false },
-  hooksOrNested?: Hooks | ((hooks: NestedHooks) => void),
+  hooksMetaOrNested?: { [k: string]: any } | ((hooks: NestedHooks) => void),
+  metaOrNested?: { [k: string]: any } | ((hooks: NestedHooks) => void),
   nested?: ((hooks: NestedHooks) => void)
 ): ClassDecorator | void {
-  const name =
-    typeof nameOrTarget === 'string' ? nameOrTarget : nameOrTarget.name;
-  if (typeof nameOrTarget !== 'string') {
-    const target = nameOrTarget;
-    qunitModuleDecorator(target, name, options);
-  } else {
+  if (typeof nameMetaOrTarget !== 'function') {
     return (target: any) => {
-      let hooks = typeof hooksOrNested === 'object' ? hooksOrNested : undefined;
-      let nestedFn = typeof hooksOrNested !== 'object' ? hooksOrNested : nested;
-      qunitModuleDecorator(target, name, options, hooks, nestedFn);
+      const arg3isHooks =
+        typeof hooksMetaOrNested === 'object' && isHooks(hooksMetaOrNested);
+      const name =
+        typeof nameMetaOrTarget === 'string' ? nameMetaOrTarget : target.name;
+      let hooks = arg3isHooks ? hooksMetaOrNested : undefined;
+      const meta =
+        typeof nameMetaOrTarget !== 'string'
+          ? nameMetaOrTarget
+          : !arg3isHooks
+            ? hooksMetaOrNested
+            : typeof metaOrNested !== 'function'
+              ? metaOrNested
+              : {};
+      let nestedFn =
+        typeof hooksMetaOrNested !== 'object'
+          ? hooksMetaOrNested
+          : typeof metaOrNested !== 'object'
+            ? metaOrNested
+            : nested;
+      qunitModuleDecorator(target, name, options, meta, hooks, nestedFn);
     };
+  } else {
+    const target = nameMetaOrTarget;
+    qunitModuleDecorator(target, name, options);
   }
 }
 
@@ -112,17 +151,36 @@ function qunitModule(
   name: string,
   nested?: (hooks: NestedHooks) => void
 ): ClassDecorator;
+function qunitModule(meta: { [k: string]: any }): ClassDecorator;
+function qunitModule(
+  name: string,
+  hooks: Hooks,
+  meta: { [k: string]: any },
+  nested?: (hooks: NestedHooks) => void
+): ClassDecorator;
+function qunitModule(
+  name: string,
+  meta: { [k: string]: any },
+  nested?: (hooks: NestedHooks) => void
+): ClassDecorator;
 function qunitModule(
   name: string,
   hooks?: Hooks,
   nested?: (hooks: NestedHooks) => void
 ): ClassDecorator;
 function qunitModule(
-  nameOrTarget: Function | string,
-  hooksOrNested?: Hooks | ((hooks: NestedHooks) => void),
+  nameMetaOrTarget: Function | string | { [k: string]: any },
+  hooksMetaOrNested?: { [k: string]: any } | ((hooks: NestedHooks) => void),
+  metaOrNested?: { [k: string]: any } | ((hooks: NestedHooks) => void),
   nested?: ((hooks: NestedHooks) => void)
 ): ClassDecorator | void {
-  return baseQunitModuleDecorator(nameOrTarget, {}, hooksOrNested, nested);
+  return baseQunitModuleDecorator(
+    nameMetaOrTarget,
+    {},
+    hooksMetaOrNested,
+    metaOrNested,
+    nested
+  );
 }
 
 function moduleSkip<TFunction extends Function>(
@@ -132,23 +190,38 @@ function moduleSkip(
   name: string,
   nested?: (hooks: NestedHooks) => void
 ): ClassDecorator;
+function moduleSkip(meta: { [k: string]: any }): ClassDecorator;
+function moduleSkip(
+  name: string,
+  hooks: Hooks,
+  meta: { [k: string]: any },
+  nested?: (hooks: NestedHooks) => void
+): ClassDecorator;
+function moduleSkip(
+  name: string,
+  meta: { [k: string]: any },
+  nested?: (hooks: NestedHooks) => void
+): ClassDecorator;
 function moduleSkip(
   name: string,
   hooks?: Hooks,
   nested?: (hooks: NestedHooks) => void
 ): ClassDecorator;
 function moduleSkip(
-  nameOrTarget: Function | string,
-  hooksOrNested?: Hooks | ((hooks: NestedHooks) => void),
+  nameMetaOrTarget: Function | string | { [k: string]: any },
+  hooksMetaOrNested?: { [k: string]: any } | ((hooks: NestedHooks) => void),
+  metaOrNested?: { [k: string]: any } | ((hooks: NestedHooks) => void),
   nested?: ((hooks: NestedHooks) => void)
 ): ClassDecorator | void {
   return baseQunitModuleDecorator(
-    nameOrTarget,
+    nameMetaOrTarget,
     { skip: true },
-    hooksOrNested,
+    hooksMetaOrNested,
+    metaOrNested,
     nested
   );
 }
+
 function moduleOnly<TFunction extends Function>(
   target: TFunction
 ): TFunction | void;
@@ -156,23 +229,38 @@ function moduleOnly(
   name: string,
   nested?: (hooks: NestedHooks) => void
 ): ClassDecorator;
+function moduleOnly(meta: { [k: string]: any }): ClassDecorator;
+function moduleOnly(
+  name: string,
+  hooks: Hooks,
+  meta: { [k: string]: any },
+  nested?: (hooks: NestedHooks) => void
+): ClassDecorator;
+function moduleOnly(
+  name: string,
+  meta: { [k: string]: any },
+  nested?: (hooks: NestedHooks) => void
+): ClassDecorator;
 function moduleOnly(
   name: string,
   hooks?: Hooks,
   nested?: (hooks: NestedHooks) => void
 ): ClassDecorator;
 function moduleOnly(
-  nameOrTarget: Function | string,
-  hooksOrNested?: Hooks | ((hooks: NestedHooks) => void),
+  nameMetaOrTarget: Function | string | { [k: string]: any },
+  hooksMetaOrNested?: { [k: string]: any } | ((hooks: NestedHooks) => void),
+  metaOrNested?: { [k: string]: any } | ((hooks: NestedHooks) => void),
   nested?: ((hooks: NestedHooks) => void)
 ): ClassDecorator | void {
   return baseQunitModuleDecorator(
-    nameOrTarget,
+    nameMetaOrTarget,
     { only: true },
-    hooksOrNested,
+    hooksMetaOrNested,
+    metaOrNested,
     nested
   );
 }
+
 type moduleDecorator = typeof qunitModule & {
   skip: typeof moduleSkip;
   only: typeof moduleOnly;
