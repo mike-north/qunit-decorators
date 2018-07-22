@@ -141,6 +141,7 @@ function baseQunitModuleDecorator(
     };
   } else {
     const target = nameMetaOrTarget;
+    const name = nameMetaOrTarget.name;
     qunitSuiteDecorator(target, name, options);
   }
 }
