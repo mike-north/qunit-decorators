@@ -54,14 +54,6 @@ interface ModuleDecoratorOptions {
   only?: boolean;
 }
 
-function installModuleMetadata(meta: { [k: string]: any }) {
-  if ((QUnit.config as any).currentModule.meta === void 0) {
-    (QUnit.config as any).currentModule.meta = meta;
-  } else {
-    Object.assign((QUnit.config as any).currentModule.meta, meta);
-  }
-}
-
 function qunitModuleDecorator(
   target: any,
   name: string,
@@ -73,8 +65,7 @@ function qunitModuleDecorator(
   let fn = QUnit.module;
   if (options.skip) fn = (QUnit.module as any).skip;
   else if (options.only) fn = (QUnit.module as any).only;
-  fn(name, hks => {
-    installModuleMetadata(meta);
+  let returned: any = fn(name, hks => {
     if (nested) nested(hks);
     if (hooks && hooks.before) hks.before(hooks.before);
     if (hooks && hooks.after) hks.after(hooks.after);
@@ -93,6 +84,9 @@ function qunitModuleDecorator(
         task.run(task.options);
       });
   });
+  if (returned && returned.meta) {
+    returned.meta(meta);
+  }
 }
 
 function isHooks(maybeHooks: { [k: string]: any }) {
@@ -270,13 +264,19 @@ type moduleDecorator = typeof qunitModule & {
 export const suite = qunitModule as moduleDecorator;
 
 function makeTestDecorator<T>(
-  nameOrTarget: string | Object,
-  propertyKey?: string | symbol,
-  _descriptor?: TypedPropertyDescriptor<T>,
-  options: { skip?: boolean; todo?: boolean; only?: boolean } = {}
+  nameMetaOrTarget: string | Object,
+  propertyKeyOrMeta?: string | symbol | { [k: string]: any },
+  descriptor?: TypedPropertyDescriptor<T>,
+  options: { skip?: boolean; todo?: boolean; only?: boolean } = {},
+  meta: { [k: string]: any } = {}
 ): MethodDecorator | TypedPropertyDescriptor<T> | void {
-  if (typeof nameOrTarget !== 'string' && propertyKey) {
-    const target = nameOrTarget as any;
+  if (
+    typeof nameMetaOrTarget !== 'string' &&
+    propertyKeyOrMeta &&
+    typeof propertyKeyOrMeta !== 'object'
+  ) {
+    const propertyKey = propertyKeyOrMeta;
+    const target = nameMetaOrTarget as any;
     const fn = target[propertyKey];
     const name = fn.name;
     let task = addInitTask(target.constructor, name, opts => {
@@ -293,46 +293,69 @@ function makeTestDecorator<T>(
     if (options.skip) task.options.skip = true;
     if (options.todo) task.options.todo = true;
     if (options.only) task.options.only = true;
+    return descriptor;
   } else {
-    const name = nameOrTarget as string;
     return (
       target: any,
       key: string | symbol,
-      _desc: TypedPropertyDescriptor<any>
+      desc: TypedPropertyDescriptor<any>
     ) => {
+      if (typeof key === 'symbol') {
+        throw new Error('Symbol test names are not allowed');
+      }
+      const name =
+        typeof nameMetaOrTarget === 'string' ? nameMetaOrTarget : key;
+      const testMeta =
+        typeof nameMetaOrTarget !== 'string'
+          ? nameMetaOrTarget
+          : typeof propertyKeyOrMeta === 'object'
+            ? propertyKeyOrMeta
+            : meta || {};
       const fn = target[key];
       let task = addInitTask(target.constructor, fn.name, opts => {
+        let fnName: 'skip' | 'only' | 'todo' | 'test';
         if (opts.skip) {
-          QUnit.skip(name, fn);
+          fnName = 'skip';
         } else if (opts.only) {
-          QUnit.only(name, fn);
+          fnName = 'only';
         } else if (opts.todo) {
-          QUnit.todo(name, fn);
+          fnName = 'todo';
         } else {
-          QUnit.test(name, fn);
+          fnName = 'test';
+        }
+        let returned = (QUnit as any)[fnName](name, fn);
+        if (returned && returned.meta) {
+          returned.meta(testMeta);
         }
       });
       if (options.skip) task.options.skip = true;
       if (options.todo) task.options.todo = true;
       if (options.only) task.options.only = true;
+      return desc;
     };
   }
 }
 
 // @test
+// @test('this is a thing')
+// @test({ meta })
+// @test('this is a thing', { meta })
 function testDecorator<T>(
   target: Object,
   propertyKey: string | symbol,
   descriptor: TypedPropertyDescriptor<T>
 ): TypedPropertyDescriptor<T> | void;
-// @test('this is a thing')
-function testDecorator(name: string): MethodDecorator;
+function testDecorator(
+  name: string,
+  meta?: { [k: string]: any }
+): MethodDecorator;
+function testDecorator(meta: { [k: string]: any }): MethodDecorator;
 function testDecorator<T>(
-  nameOrTarget: string | Object,
-  propertyKey?: string | symbol,
+  nameMetaOrTarget: string | Object,
+  propertyKeyOrMeta?: string | symbol | { [k: string]: any },
   descriptor?: TypedPropertyDescriptor<T>
 ): MethodDecorator | TypedPropertyDescriptor<T> | void {
-  return makeTestDecorator(nameOrTarget, propertyKey, descriptor);
+  return makeTestDecorator(nameMetaOrTarget, propertyKeyOrMeta, descriptor);
 }
 
 // @test.only
@@ -341,14 +364,14 @@ function testOnly<T>(
   propertyKey: string | symbol,
   descriptor: TypedPropertyDescriptor<T>
 ): TypedPropertyDescriptor<T> | void;
-// @test.only('this is a thing')
-function testOnly(name: string): MethodDecorator;
+function testOnly(name: string, meta?: { [k: string]: any }): MethodDecorator;
+function testOnly(meta: { [k: string]: any }): MethodDecorator;
 function testOnly<T>(
-  nameOrTarget: string | Object,
-  propertyKey?: string | symbol,
+  nameMetaOrTarget: string | Object,
+  propertyKeyOrMeta?: string | symbol | { [k: string]: any },
   descriptor?: TypedPropertyDescriptor<T>
 ): MethodDecorator | TypedPropertyDescriptor<T> | void {
-  return makeTestDecorator(nameOrTarget, propertyKey, descriptor, {
+  return makeTestDecorator(nameMetaOrTarget, propertyKeyOrMeta, descriptor, {
     only: true
   });
 }
@@ -359,14 +382,14 @@ function testSkip<T>(
   propertyKey: string | symbol,
   descriptor: TypedPropertyDescriptor<T>
 ): TypedPropertyDescriptor<T> | void;
-// @test.skip('this is a thing')
-function testSkip(name: string): MethodDecorator;
+function testSkip(name: string, meta?: { [k: string]: any }): MethodDecorator;
+function testSkip(meta: { [k: string]: any }): MethodDecorator;
 function testSkip<T>(
-  nameOrTarget: string | Object,
-  propertyKey?: string | symbol,
+  nameMetaOrTarget: string | Object,
+  propertyKeyOrMeta?: string | symbol | { [k: string]: any },
   descriptor?: TypedPropertyDescriptor<T>
 ): MethodDecorator | TypedPropertyDescriptor<T> | void {
-  return makeTestDecorator(nameOrTarget, propertyKey, descriptor, {
+  return makeTestDecorator(nameMetaOrTarget, propertyKeyOrMeta, descriptor, {
     skip: true
   });
 }
@@ -377,14 +400,14 @@ function testTodo<T>(
   propertyKey: string | symbol,
   descriptor: TypedPropertyDescriptor<T>
 ): TypedPropertyDescriptor<T> | void;
-// @test.todo('this is a thing')
-function testTodo(name: string): MethodDecorator;
+function testTodo(name: string, meta?: { [k: string]: any }): MethodDecorator;
+function testTodo(meta: { [k: string]: any }): MethodDecorator;
 function testTodo<T>(
-  nameOrTarget: string | Object,
-  propertyKey?: string | symbol,
+  nameMetaOrTarget: string | Object,
+  propertyKeyOrMeta?: string | symbol | { [k: string]: any },
   descriptor?: TypedPropertyDescriptor<T>
 ): MethodDecorator | TypedPropertyDescriptor<T> | void {
-  return makeTestDecorator(nameOrTarget, propertyKey, descriptor, {
+  return makeTestDecorator(nameMetaOrTarget, propertyKeyOrMeta, descriptor, {
     todo: true
   });
 }
