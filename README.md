@@ -27,8 +27,8 @@ import { suite, test } from 'qunit-decorators';
 @suite // <-- decorate your modules with @suite
 class UserLoginTests {
 
-  @test // <-- decorate your test methods with @test
-  loginWithoutPassword(assert: Assert) {
+  // ↓ decorate your test methods with @test
+  @test 'login without password should fail'(assert: Assert) {
     let { result } = loginWithoutPassword(); // the thing being tested
     assert.equal(result, 'ERROR', 'User receives an error'); // ✅
   }
@@ -37,7 +37,7 @@ class UserLoginTests {
 }
 ```
 
-In the example above your test module would get its name from the class (`UserLoginTests`), and it would contain a test that gets its name from the method (`loginWithoutPassword`). You may also pass an argument to these decorators, in order to provide your own names
+In the example above your test module would get its name from the class (`UserLoginTests`), and it would contain a test that gets its name from the method (`login without password should fail`). If you want to have a method name that's different from the name of the test, you can also pass an argument to these decorators.
 
 _see: [QUnit.module](https://api.qunitjs.com/QUnit/module) and [QUnit.test](https://api.qunitjs.com/QUnit/test)_
 
@@ -49,7 +49,7 @@ import { suite, test } from 'qunit-decorators';
 class UserLoginTests {
 
   @test('Missing password case errors as expected')
-  loginWithoutPassword(assert: Assert) {
+  testMethod(assert: Assert) {
     let { result } = loginWithoutPassword(); // the thing being tested
     assert.equal(result, 'ERROR', 'User receives an error'); // ✅
   }
@@ -72,8 +72,7 @@ class MyNewTests { ... }
 @suite
 class ExistingFeatureTests {
 
-  @test.only('Fixing something else too')
-  buttonTest() { ... }
+  @test.only 'Fixing something else too'() { ... }
 
 }
 ```
@@ -91,8 +90,7 @@ class SlowTests { ... }
 @suite
 class ExistingFeatureTests {
 
-  @test.skip
-  buggyTest() { ... }
+  @test.skip 'a buggy test I am still working on'() { ... }
 
 }
 ```
@@ -107,8 +105,7 @@ import { suite, test } from 'qunit-decorators';
 @suite
 class WIPBugFixes {
 
-  @test.todo("We'll get to this Soon™️")
-  somethingForTomorrow() {
+  @test.todo 'We\'ll get to this Soon™️'(assert) {
     assert.ok(false);
   }
 
