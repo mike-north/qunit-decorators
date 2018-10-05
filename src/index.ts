@@ -1,3 +1,8 @@
+/**
+ * @packagedocumentation
+ * Foo
+ */
+
 // tslint:disable ban-types
 const INIT_TASKS_KEY = `__qunit_decorators_${Math.round(Math.random() * 1e9)}`;
 type TestInitTaskFn = (opts: TestOptions) => any;
@@ -275,7 +280,10 @@ type moduleDecorator = typeof qunitModule & {
 };
 (qunitModule as any).skip = moduleSkip;
 (qunitModule as any).only = moduleOnly;
-export const suite = qunitModule as moduleDecorator;
+/**
+ * @public
+ */
+export const suite = qunitModule as any;
 
 function makeTestDecorator<T>(
   nameMetaOrTarget: string | Object,
@@ -354,11 +362,12 @@ function makeTestDecorator<T>(
     };
   }
 }
-
-// @test
-// @test('this is a thing')
-// @test({ meta })
-// @test('this is a thing', { meta })
+ /**
+  * @test
+  * @test('this is a thing')
+  * @test({ meta })
+  * @test('this is a thing', { meta })
+  */
 function testDecorator<T>(
   target: Object,
   propertyKey: string | symbol,
@@ -396,6 +405,7 @@ function testOnly<T>(
 }
 
 // @test.skip
+
 function testSkip<T>(
   target: Object,
   propertyKey: string | symbol,
@@ -439,5 +449,12 @@ type dec = typeof testDecorator & {
 (testDecorator as any).only = testOnly;
 (testDecorator as any).skip = testSkip;
 (testDecorator as any).todo = testTodo;
-
+/**
+ * @public
+ */
 export const test = testDecorator as dec;
+
+/**
+ * @public
+ */
+export function foo() {return 'bar'}
