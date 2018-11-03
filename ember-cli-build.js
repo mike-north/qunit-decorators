@@ -1,5 +1,6 @@
 'use strict';
 
 module.exports = require('libkit').build({
-  name: 'qunit-decorators'
+  name: 'qunit-decorators',
+  root: __dirname
 });
