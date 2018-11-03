@@ -2,10 +2,10 @@ language: node_js
 sudo: required
 dist: trusty
 addons:
-    chrome: stable
+  chrome: stable
 before_script:
-    - "sudo chown root /opt/google/chrome/chrome-sandbox"
-    - "sudo chmod 4755 /opt/google/chrome/chrome-sandbox"
+  - 'sudo chown root /opt/google/chrome/chrome-sandbox'
+  - 'sudo chmod 4755 /opt/google/chrome/chrome-sandbox'
 cache:
   directories:
     - ~/.npm
@@ -17,7 +17,7 @@ node_js:
   - '8'
   - '6'
 after_success:
-  - npm run travis-deploy-once "npm run semantic-release"
+  - yarn travis-deploy-once "yarn semantic-release"
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/
