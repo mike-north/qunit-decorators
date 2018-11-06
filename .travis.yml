@@ -13,9 +13,7 @@ notifications:
   email: false
 node_js:
   - '10'
-  - '9'
   - '8'
-  - '6'
 after_success:
   - yarn travis-deploy-once "yarn semantic-release"
 branches:
