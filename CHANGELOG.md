@@ -1,3 +1,10 @@
+## [1.1.5](https://github.com/mike-north/qunit-decorators/compare/v1.1.4...v1.1.5) (2018-11-08)
+
+
+### Bug Fixes
+
+* props on suite prototypes can be used in tests ([6d02e16](https://github.com/mike-north/qunit-decorators/commit/6d02e16))
+
 ## [1.1.4](https://github.com/mike-north/qunit-decorators/compare/v1.1.3...v1.1.4) (2018-11-08)
 
 
