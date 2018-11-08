@@ -23,6 +23,8 @@ interface Module {
   new (): any;
 }
 
+const BANNED_PROTO_PROPS: any[] = ['constructor'];
+
 function getModuleMetadata(testModule: Module | Function): QUnitModuleMetadata {
   const obj = testModule as any;
   if (typeof obj[INIT_TASKS_KEY] === 'undefined') {
@@ -54,28 +56,75 @@ interface ModuleDecoratorOptions {
   only?: boolean;
 }
 
-function qunitSuiteDecorator(
-  target: any,
+interface Constructor {
+  new (...args: any[]): any;
+}
+
+interface TestClassConstructor<I extends TestClass> {
+  new (hooks?: NestedHooks): I;
+}
+
+class TestClass {
+  before?: () => any;
+  after?: () => any;
+  beforeEach?: () => any;
+  afterEach?: () => any;
+}
+
+/**
+ * Recursively walk up a prototype chain, gathering all
+ * properties along the way.
+ *
+ * @param clazz A factory for test suite classes
+ */
+function getClassProperties<C extends Constructor>(clazz: C) {
+  let ret: Partial<InstanceType<C>> = {};
+
+  function methods(obj: Partial<InstanceType<C>>) {
+    if (obj) {
+      let ps = Object.getOwnPropertyNames(obj);
+
+      ps.forEach(p => {
+        if (BANNED_PROTO_PROPS.indexOf(p) >= 0) return;
+        ret[p] = obj[p];
+      });
+
+      methods(Object.getPrototypeOf(obj));
+    }
+  }
+
+  methods(clazz.prototype);
+
+  return ret;
+}
+
+function qunitSuiteDecorator<
+  I extends TestClass,
+  Target extends TestClassConstructor<I>
+>(
+  target: Target,
   name: string,
   options: ModuleDecoratorOptions,
   meta: { [k: string]: any } = {},
   hooks?: Hooks,
   nested?: (hooks: NestedHooks) => void
 ) {
-  let fn: (name: string, cb: (this: any, hooks: NestedHooks) => void) => void = QUnit.module;
+  let fn: (name: string, cb: (this: any, hooks: NestedHooks) => void) => void =
+    QUnit.module;
   if (options.skip) fn = (QUnit.module as any).skip;
   else if (options.only) fn = (QUnit.module as any).only;
   let normalizedName: string = name
     ? name
     : target
-      ? target.name
-      : `Unnamed QUnit Module ${Math.round(1e6 + Math.random() * 1e6).toString(
-          16
-        )}`;
+    ? target.name
+    : `Unnamed QUnit Module ${Math.round(1e6 + Math.random() * 1e6).toString(
+        16
+      )}`;
   let returned: any = fn(normalizedName, function(this: any, hks: NestedHooks) {
     if (nested) nested(hks);
     let instance = new target(hks);
-    Object.assign(this, instance);
+    const r = getClassProperties(target);
+    Object.assign(this, instance, r);
     if (hooks && hooks.before) hks.before(hooks.before);
     if (hooks && hooks.after) hks.after(hooks.after);
     if (hooks && hooks.beforeEach) hks.beforeEach(hooks.beforeEach);
@@ -115,15 +164,18 @@ function isHooks(maybeHooks: { [k: string]: any }) {
   return true;
 }
 
-function baseQunitModuleDecorator(
-  nameMetaOrTarget: Function | string | { [k: string]: any },
+function baseQunitModuleDecorator<
+  I extends TestClass,
+  Target extends TestClassConstructor<I>
+>(
+  nameMetaOrTarget: Target | string | { [k: string]: any },
   options: ModuleDecoratorOptions = { skip: false, only: false },
   hooksMetaOrNested?: { [k: string]: any } | ((hooks: NestedHooks) => void),
   metaOrNested?: { [k: string]: any } | ((hooks: NestedHooks) => void),
   nested?: ((hooks: NestedHooks) => void)
 ): ClassDecorator | void {
   if (typeof nameMetaOrTarget !== 'function') {
-    return (target: any) => {
+    return (target: Function) => {
       const arg3isHooks =
         typeof hooksMetaOrNested === 'object' && isHooks(hooksMetaOrNested);
       const name =
@@ -133,22 +185,29 @@ function baseQunitModuleDecorator(
         typeof nameMetaOrTarget !== 'string'
           ? nameMetaOrTarget
           : !arg3isHooks
-            ? hooksMetaOrNested
-            : typeof metaOrNested !== 'function'
-              ? metaOrNested
-              : {};
+          ? hooksMetaOrNested
+          : typeof metaOrNested !== 'function'
+          ? metaOrNested
+          : {};
       let nestedFn =
         typeof hooksMetaOrNested !== 'object'
           ? hooksMetaOrNested
           : typeof metaOrNested !== 'object'
-            ? metaOrNested
-            : nested;
-      qunitSuiteDecorator(target, name, options, meta, hooks, nestedFn);
+          ? metaOrNested
+          : nested;
+      qunitSuiteDecorator(
+        target as Target,
+        name,
+        options,
+        meta,
+        hooks,
+        nestedFn
+      );
     };
   } else {
     const target = nameMetaOrTarget;
     const name = nameMetaOrTarget.name;
-    qunitSuiteDecorator(target, name, options);
+    qunitSuiteDecorator(target as Target, name, options);
   }
 }
 
@@ -328,8 +387,8 @@ function makeTestDecorator<T>(
         typeof nameMetaOrTarget !== 'string'
           ? nameMetaOrTarget
           : typeof propertyKeyOrMeta === 'object'
-            ? propertyKeyOrMeta
-            : meta || {};
+          ? propertyKeyOrMeta
+          : meta || {};
       const fn = target[key];
       let task = addInitTask(target.constructor, fn.name, opts => {
         let fnName: 'skip' | 'only' | 'todo' | 'test';
