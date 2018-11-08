@@ -1,3 +1,10 @@
+## [1.1.4](https://github.com/mike-north/qunit-decorators/compare/v1.1.3...v1.1.4) (2018-11-08)
+
+
+### Bug Fixes
+
+* use shared renovate config ([f8648bc](https://github.com/mike-north/qunit-decorators/commit/f8648bc))
+
 ## [1.1.3](https://github.com/mike-north/qunit-decorators/compare/v1.1.2...v1.1.3) (2018-11-06)
 
 
