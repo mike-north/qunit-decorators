@@ -27,7 +27,6 @@
     "pretest": "npm run problems",
     "test": "ember test",
     "tdd": "ember test --server",
-    "travis-deploy-once": "travis-deploy-once",
     "semantic-release": "semantic-release"
   },
   "license": "MIT",
@@ -43,7 +42,6 @@
     "libkit": "mike-north/libkit#ts-3",
     "semantic-release": "15.12.3",
     "shelljs": "0.8.3",
-    "travis-deploy-once": "5.0.9",
     "tslint": "5.11.0",
     "typescript": "3.2.1"
   },
