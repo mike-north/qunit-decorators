@@ -42,8 +42,8 @@
     "libkit": "mike-north/libkit#ts-3",
     "semantic-release": "15.12.5",
     "shelljs": "0.8.3",
-    "tslint": "5.12.1",
-    "typescript": "3.2.4"
+    "tslint": "5.13.1",
+    "typescript": "3.3.3333"
   },
   "dependencies": {
     "qunit": "^2.4.1"
