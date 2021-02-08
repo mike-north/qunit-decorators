@@ -40,7 +40,7 @@
     "ember-cli": "3.6.1",
     "husky": "2.4.1",
     "libkit": "mike-north/libkit#ts-3",
-    "semantic-release": "15.12.5",
+    "semantic-release": "17.3.8",
     "shelljs": "0.8.4",
     "tslint": "5.13.1",
     "typescript": "3.3.4000"
