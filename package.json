@@ -46,7 +46,7 @@
     "typescript": "3.3.4000"
   },
   "dependencies": {
-    "qunit": "^2.4.1"
+    "qunit": "^2.15.0"
   },
   "repository": {
     "type": "git",
