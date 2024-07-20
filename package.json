@@ -10,6 +10,7 @@
   },
   "keywords": [
     "ember-addon",
+    "qunit-plugin",
     "typescript",
     "decorators"
   ],
