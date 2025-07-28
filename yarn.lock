@@ -200,12 +200,12 @@
     "@babel/types" "^7.27.1"
 
 "@babel/helpers@^7.27.6":
-  version "7.27.6"
-  resolved "https://registry.yarnpkg.com/@babel/helpers/-/helpers-7.27.6.tgz#6456fed15b2cb669d2d1fabe84b66b34991d812c"
-  integrity sha512-muE8Tt8M22638HU31A3CgfSUciwz1fhATfoVai05aPXGor//CdWDCbnlY1yvBPo07njuVOCNGCSp/GTt12lIug==
+  version "7.28.2"
+  resolved "https://registry.yarnpkg.com/@babel/helpers/-/helpers-7.28.2.tgz#80f0918fecbfebea9af856c419763230040ee850"
+  integrity sha512-/V9771t+EgXz62aCcyofnQhGM8DQACbRhvzKFsXKC9QM+5MadF8ZmIm0crDMaz3+o0h0zXfJnd4EhbYbxsrcFw==
   dependencies:
     "@babel/template" "^7.27.2"
-    "@babel/types" "^7.27.6"
+    "@babel/types" "^7.28.2"
 
 "@babel/parser@^7.27.2", "@babel/parser@^7.28.0":
   version "7.28.0"
@@ -807,9 +807,9 @@
     source-map-support "^0.5.16"
 
 "@babel/runtime@^7.14.0":
-  version "7.27.6"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.27.6.tgz#ec4070a04d76bae8ddbb10770ba55714a417b7c6"
-  integrity sha512-vbavdySgbTTrmFE+EsiqUTzlOr5bzlnJtUv9PynGCAKvfQqjIXbvFdumPM/GxMDfyuGMJaJAU6TO4zc1Jf1i8Q==
+  version "7.28.2"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.28.2.tgz#2ae5a9d51cc583bd1f5673b3bb70d6d819682473"
+  integrity sha512-KHp2IflsnGywDjBWDkR9iEqiWSpc8GIi0lgTT3mOElT0PP1tG26P4tmFI2YvAdzgq9RGyoHZQEIEdZy6Ec5xCA==
 
 "@babel/template@^7.27.1", "@babel/template@^7.27.2":
   version "7.27.2"
@@ -833,10 +833,10 @@
     "@babel/types" "^7.28.0"
     debug "^4.3.1"
 
-"@babel/types@^7.27.1", "@babel/types@^7.27.3", "@babel/types@^7.27.6", "@babel/types@^7.28.0", "@babel/types@^7.4.4":
-  version "7.28.1"
-  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.28.1.tgz#2aaf3c10b31ba03a77ac84f52b3912a0edef4cf9"
-  integrity sha512-x0LvFTekgSX+83TI28Y9wYPUfzrnl2aT5+5QLnO6v7mSJYtEEevuDRN0F0uSHRk1G1IWZC43o00Y0xDDrpBGPQ==
+"@babel/types@^7.27.1", "@babel/types@^7.27.3", "@babel/types@^7.28.0", "@babel/types@^7.28.2", "@babel/types@^7.4.4":
+  version "7.28.2"
+  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.28.2.tgz#da9db0856a9a88e0a13b019881d7513588cf712b"
+  integrity sha512-ruv7Ae4J5dUYULmeXw1gmb7rYRz57OWCPM57pHojnLq/3Z1CK2lNSLTCVjxVk1F/TZHwOZZrOWi0ur95BbLxNQ==
   dependencies:
     "@babel/helper-string-parser" "^7.27.1"
     "@babel/helper-validator-identifier" "^7.27.1"
@@ -1206,24 +1206,24 @@
   dependencies:
     "@octokit/openapi-types" "^12.11.0"
 
-"@pnpm/constants@1001.1.0":
-  version "1001.1.0"
-  resolved "https://registry.yarnpkg.com/@pnpm/constants/-/constants-1001.1.0.tgz#d08d0f39aca39f701fae1df9e017af676cdeebf5"
-  integrity sha512-xb9dfSGi1qfUKY3r4Zy9JdC9+ZeaDxwfE7HrrGIEsBVY1hvIn6ntbR7A97z3nk44yX7vwbINNf9sizTp0WEtEw==
+"@pnpm/constants@1001.2.0":
+  version "1001.2.0"
+  resolved "https://registry.yarnpkg.com/@pnpm/constants/-/constants-1001.2.0.tgz#4bbda1ebe0d17cb7436c9fdea5c8900d5a6effe3"
+  integrity sha512-ohlStawRU3+C1AvUPtfkK+HfZ/5UbDGO79dujS2dbTpzl3O03L3Ggk7nnH361ubbMYZqp4yWlX030xhMGpr8Nw==
 
-"@pnpm/error@1000.0.2":
-  version "1000.0.2"
-  resolved "https://registry.yarnpkg.com/@pnpm/error/-/error-1000.0.2.tgz#319ae3f95622ab7914996b6ff53bcbfe7bfff84e"
-  integrity sha512-2SfE4FFL73rE1WVIoESbqlj4sLy5nWW4M/RVdHvCRJPjlQHa9MH7m7CVJM204lz6I+eHoB+E7rL3zmpJR5wYnQ==
+"@pnpm/error@1000.0.3":
+  version "1000.0.3"
+  resolved "https://registry.yarnpkg.com/@pnpm/error/-/error-1000.0.3.tgz#17e295d92ade122fd2585cfc8af61f3866ef2c8a"
+  integrity sha512-Sr1wmJitZ768J+9MJVXXyd7tRaX3qThEiFH1K0AQovy2sIbLqo73MITphfVZH3YWIElt+Y1uMDnUZa676ZDA8g==
   dependencies:
-    "@pnpm/constants" "1001.1.0"
+    "@pnpm/constants" "1001.2.0"
 
 "@pnpm/find-workspace-dir@^1000.1.0":
-  version "1000.1.0"
-  resolved "https://registry.yarnpkg.com/@pnpm/find-workspace-dir/-/find-workspace-dir-1000.1.0.tgz#6539aa981cea88d0f7c530af65219d0453a8770a"
-  integrity sha512-K5iG/z0SLV6bVW1jIYvbNBI6vWAD6ETJKyWj/wwHr7hxloxtm9xJCGbe/41pmM9nfFFUPbr1Z0YOi4q9yWkj6g==
+  version "1000.1.1"
+  resolved "https://registry.yarnpkg.com/@pnpm/find-workspace-dir/-/find-workspace-dir-1000.1.1.tgz#711c4078c1864716a43881c8c5a20913e92f2576"
+  integrity sha512-mI3FqyEcEXHO2c0YvGfvssaK3ITzKmc10DKRO+HdrN9zFoJxNMerzmVGqea+jeSlApDFzKqyrGCewITPZN9d2g==
   dependencies:
-    "@pnpm/error" "1000.0.2"
+    "@pnpm/error" "1000.0.3"
     find-up "^5.0.0"
 
 "@semantic-release/changelog@^3.0.0":
@@ -1470,9 +1470,9 @@
   integrity sha512-hov8bUuiLiyFPGyFPE1lwWhmzYbirOXQNNo40+y3zow8aFVTeyn3VWL0VFFfdNddA8S4Vf0Tc062rzyNr7Paag==
 
 "@types/node@*", "@types/node@>= 8", "@types/node@>=10.0.0":
-  version "24.0.15"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-24.0.15.tgz#f34fbc973e7d64217106e0c59ed8761e6b51381e"
-  integrity sha512-oaeTSbCef7U/z7rDeJA138xpG3NuKc64/rZ2qmUFkFJmnMsAPaluIifqyWd8hSSMxyP9oie3dLAqYPblag9KgA==
+  version "24.1.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-24.1.0.tgz#0993f7dc31ab5cc402d112315b463e383d68a49c"
+  integrity sha512-ut5FthK5moxFKH2T1CUOC6ctR67rQRvvHdFLCD2Ql6KXmMuCrjsSsRI9UsLCm9M18BMwClv4pn327UvB7eeO1w==
   dependencies:
     undici-types "~7.8.0"
 
@@ -4283,9 +4283,9 @@ ee-first@1.1.1:
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
 electron-to-chromium@^1.5.173:
-  version "1.5.187"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.187.tgz#8c58854e065962351dc87e95614dd78d50425966"
-  integrity sha512-cl5Jc9I0KGUoOoSbxvTywTa40uspGJt/BDBoDLoxJRSBpWh4FFXBsjNRHfQrONsV/OoEjDfHUmZQa2d6Ze4YgA==
+  version "1.5.191"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.191.tgz#8ae49a471447b1ceaf1d4d183a9000082f52363c"
+  integrity sha512-xcwe9ELcuxYLUFqZZxL19Z6HVKcvNkIwhbHUz7L3us6u12yR+7uY89dSl570f/IqNthx8dAw3tojG7i4Ni4tDA==
 
 elliptic@^6.5.3, elliptic@^6.5.5:
   version "6.6.1"
@@ -12590,9 +12590,9 @@ validate-npm-package-name@^4.0.0:
     builtins "^5.0.0"
 
 validate-npm-package-name@^6.0.0:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/validate-npm-package-name/-/validate-npm-package-name-6.0.1.tgz#7b928e5fe23996045a6de5b5a22eedb3611264dd"
-  integrity sha512-OaI//3H0J7ZkR1OqlhGA8cA+Cbk/2xFOQpJOt5+s27/ta9eZwpeervh4Mxh4w0im/kdgktowaqVNR7QOrUd7Yg==
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/validate-npm-package-name/-/validate-npm-package-name-6.0.2.tgz#4e8d2c4d939975a73dd1b7a65e8f08d44c85df96"
+  integrity sha512-IUoow1YUtvoBBC06dXs8bR8B9vuA3aJfmQNKMoaPG/OFsPmoQvw8xh+6Ye25Gx9DQhoEom3Pcu9MKHerm/NpUQ==
 
 vary@^1, vary@~1.1.2:
   version "1.1.2"
