@@ -41,7 +41,7 @@
     "husky": "2.7.0",
     "libkit": "mike-north/libkit#ts-3",
     "semantic-release": "15.12.5",
-    "shelljs": "0.9.2",
+    "shelljs": "0.10.0",
     "tslint": "5.13.1",
     "typescript": "3.3.4000"
   },
